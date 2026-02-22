@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum FileType {
+  FILE
+  FOLDER
+}
+
+enum ShareAccess {
+  READ_ONLY
+}
+
+enum ExportFormat {
+  SVG
+  PNG
+  PDF
+  MD
+}
+
+enum ExportStatus {
+  PENDING
+  RUNNING
+  DONE
+  FAILED
+}
+
+model User {
+  id          String      @id @default(uuid())
+  logtoUserId String      @unique
+  email       String?     @unique
+  name        String?
+  avatarUrl   String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  workspaces  Workspace[]
+  exports     ExportJob[]
+  shares      ShareLink[]
+}
+
+model Workspace {
+  id          String      @id @default(uuid())
+  ownerId     String
+  name        String
+  slug        String      @unique
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  owner       User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  files       FileNode[]
+  versions    FileVersion[]
+  shares      ShareLink[]
+  exports     ExportJob[]
+
+  @@index([ownerId])
+}
+
+model FileNode {
+  id          String      @id @default(uuid())
+  workspaceId String
+  parentId    String?
+  name        String
+  path        String
+  type        FileType
+  content     String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  parent      FileNode?   @relation("FileTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children    FileNode[]  @relation("FileTree")
+  versions    FileVersion[]
+  shares      ShareLink[]
+  exports     ExportJob[]
+
+  @@unique([workspaceId, path])
+  @@index([workspaceId])
+  @@index([parentId])
+}
+
+model FileVersion {
+  id          String      @id @default(uuid())
+  workspaceId String
+  fileId      String
+  content     String
+  createdAt   DateTime    @default(now())
+  workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  file        FileNode    @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@index([fileId])
+}
+
+model ShareLink {
+  id          String      @id @default(uuid())
+  workspaceId String
+  createdById String
+  fileId      String?
+  access      ShareAccess @default(READ_ONLY)
+  token       String      @unique
+  expiresAt   DateTime?
+  createdAt   DateTime    @default(now())
+  workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy   User        @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  file        FileNode?   @relation(fields: [fileId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId])
+  @@index([createdById])
+}
+
+model ExportJob {
+  id          String       @id @default(uuid())
+  workspaceId String
+  requestedBy String
+  fileId      String?
+  format      ExportFormat
+  status      ExportStatus @default(PENDING)
+  resultUrl   String?
+  error       String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  requester   User         @relation(fields: [requestedBy], references: [id], onDelete: Cascade)
+  file        FileNode?    @relation(fields: [fileId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId])
+  @@index([requestedBy])
+}
