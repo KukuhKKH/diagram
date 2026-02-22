@@ -1,6 +1,6 @@
 {
-  "tabWidth": 3,
-  "useTabs": false,
-  "printWidth": 100,
-  "endOfLine": "auto"
+   "tabWidth": 3,
+   "useTabs": false,
+   "printWidth": 100,
+   "endOfLine": "auto"
 }
