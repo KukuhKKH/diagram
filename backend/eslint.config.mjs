@@ -29,7 +29,14 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
-      "prettier/prettier": ["error", { endOfLine: "auto" }],
+      "prettier/prettier": [
+        "error",
+        { endOfLine: "auto", tabWidth: 3, useTabs: false },
+      ],
+      // Disable ESLint core indent rule to avoid conflicts with Prettier.
+      // Prettier enforces indentation via `tabWidth` (set to 3 above).
+      indent: 'off',
+      '@typescript-eslint/indent': 'off',
     },
   },
 );
