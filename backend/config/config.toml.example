@@ -1,0 +1,111 @@
+# Configuration vars for cmd/app
+[app]
+name = "App Diagram API"
+port = ":8080"
+frontend_url = "http://localhost:3000" # Frontend URL for CORS whitelist
+idle-timeout = 5 # As seconds
+print-routes = false
+prefork = false
+production = false
+body-limit = 104857600 # Ini setara 100MB
+
+[app.tls]
+enable = false
+cert-file = "./storage/ssl.crt"
+key-file = "./storage/ssl.key"
+
+[db]
+[db.postgres]
+dsn = "host=localhost user=postgres password=postgres dbname=app_diagram port=5432 sslmode=disable TimeZone=Asia/Jakarta"
+
+[db.mysql]
+dsn = "" # <driver>://<username>:<password>@<host>:<port>/<database>
+
+[logger]
+time-format = "" # https://pkg.go.dev/time#pkg-constants
+level = 0 # panic -> 5, fatal -> 4, error -> 3, warn -> 2, info -> 1, debug -> 0, trace -> -1
+prettier = true
+
+[middleware]
+[middleware.compress]
+enable = true
+level = 1
+
+[middleware.recover]
+enable = true
+
+[middleware.monitor]
+enable = false
+path = "/monitor"
+
+[middleware.pprof]
+enable = false
+
+[middleware.limiter]
+enable = false
+max = 20
+expiration_seconds = 60
+
+[middleware.jwt]
+secret = "change-this-to-a-secure-random-secret-at-least-32-characters-long"
+issuer = "app-diagram-api"
+expiration_seconds = 3600
+
+[middleware.cors]
+enable = true
+allow_origins = "http://localhost:3000" # Will be overridden by app.frontend_url if set
+allow_headers = "Origin, Content-Type, Accept, Authorization"
+
+[middleware.filesystem]
+enable = false
+browse = true
+max_age = 3600
+index = "index.html"
+root = "./storage/public"
+
+[middleware.session]
+enable = true
+name = "session_id"
+driver = "memory" # "memory" or "redis" (use redis in production)
+expiration = 86400 # in seconds (24 hours)
+# Redis configuration (only used if driver = "redis")
+redis_host = "localhost"
+redis_port = 6379
+redis_passwd = ""
+redis_db = 0
+
+[cookie]
+name = "auth_token"
+http_only = true
+secure = false # Set to true in production with HTTPS
+same_site = "Lax"
+
+[storage]
+driver = "local" # local, ftp, s3
+
+[storage.local]
+path = "./storage/public"
+
+[storage.s3]
+endpoint = "localhost:9000" # URL Minio/S3
+access_key = "YOUR_ACCESS_KEY"
+secret_key = "YOUR_SECRET_KEY"
+bucket = "diagram-bucket"
+region = "auto"
+use_ssl = false # Set ke true jika menggunakan HTTPS
+
+[storage.ftp]
+host = "localhost"
+port = 21
+user = "ftpuser"
+password = "ftppass"
+base_dir = "/uploads"
+public_url = "http://localhost/storage"
+
+[sso]
+[sso.logto]
+endpoint = ""
+client_id = ""
+client_secret = ""
+post_logout_redirect_uri = ""
+callback_url = ""

@@ -1,2 +1,86 @@
+# IDEs
 .idea
 .vscode
+*.swp
+*.swo
+*.github
+*~
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+go.work
+
+# Build artifacts
+/backend/bin/
+/backend/dist/
+/backend/build/
+/backend/tmp/
+
+# Configuration files (keep .example files)
+/backend/config.toml
+/backend/config/*.toml
+!/backend/config/*.toml.example
+.env
+.env.local
+.env.*.local
+
+# Secrets and credentials
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+credentials/
+
+# Storage and uploads
+/backend/storage/private/*
+!/backend/storage/private/example.html
+/backend/storage/public/*
+!/backend/storage/public/example.txt
+
+# Logs
+*.log
+logs/
+/backend/*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Coverage
+coverage.txt
+coverage.html
+*.cover
+
+# Frontend
+/frontend/node_modules/
+/frontend/dist/
+/frontend/build/
+/frontend/.next/
+/frontend/.nuxt/
+/frontend/.cache/
+
+# Docker
+.dockerignore
+
+# Air (live reload)
+.air.toml
