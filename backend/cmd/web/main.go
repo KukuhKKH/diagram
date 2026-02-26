@@ -5,6 +5,7 @@ import (
 
 	"git.dev.siap.id/kukuhkkh/app-diagram/app/middleware"
 	"git.dev.siap.id/kukuhkkh/app-diagram/app/module/auth"
+	"git.dev.siap.id/kukuhkkh/app-diagram/app/module/workspace"
 	"git.dev.siap.id/kukuhkkh/app-diagram/app/router"
 	"git.dev.siap.id/kukuhkkh/app-diagram/internal/bootstrap"
 	"git.dev.siap.id/kukuhkkh/app-diagram/internal/bootstrap/database"
@@ -45,6 +46,7 @@ func main() {
 
 		// provide modules
 		auth.NewAuthModule,
+		workspace.NewWorkspaceModule,
 
 		// start aplication
 		fx.Invoke(bootstrap.Start),
